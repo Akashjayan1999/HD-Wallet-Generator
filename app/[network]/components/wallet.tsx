@@ -1,12 +1,14 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
-import { Keypair } from "@/types/index"
+import { BlockchainType, Keypair } from "@/types/index"
 import { Eye, EyeOff, Trash } from "lucide-react";
 import { usePathname } from "next/navigation"
 import { useState } from "react";
 import { useConfirm } from "@/components/providers/confirmation-provider";
 import { solanaKeyPairGenWithMnemonic } from "@/lib/utils";
+import { useWalletService} from "@/hooks/use-wallet-service";
+import { toast } from "sonner";
 interface SecretWalletProps {
   keys: Keypair[];
   secretPhase: string;
@@ -17,6 +19,7 @@ const SecretWallet = ({ keys, secretPhase,setKeys,setSecretPhase }: SecretWallet
 const pathname = usePathname().replace('/', '');
 const [showKeyIndex, setShowKeyIndex] = useState<number>(-1);
 const { confirm } = useConfirm();
+const walletService = useWalletService(pathname as BlockchainType);
 const removeItemFromWallet = async(index: number) => {
      const result = await confirm({
       title: "Delete Item",
@@ -43,8 +46,15 @@ const removePhraseAndWallet = async() => {
 }
 
 const AddWallet = async() => {
-  const newKeypair = await solanaKeyPairGenWithMnemonic(secretPhase,keys.length);
-  setKeys(prev => [...prev, newKeypair]);
+    try{
+        const keyPair = await walletService.generateKeyPair(secretPhase,keys.length);
+    //   const newKeypair = await solanaKeyPairGenWithMnemonic(secretPhase,keys.length);
+      setKeys(prev => [...prev, keyPair]);
+    } 
+    catch(error: any){
+        toast.error(error?.message||"An error occurred while generating the wallet.");
+    }
+  
 }
 
   return (

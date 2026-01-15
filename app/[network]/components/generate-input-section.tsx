@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button"
 
 import { Input } from "@/components/ui/input"
 import { usePathname } from 'next/navigation';
-import { Keypair as SolanaKeypair } from "@/types/index";
-import { generateMnemonic } from "bip39";
+import { BlockchainType, Keypair as SolanaKeypair } from "@/types/index";
+//import { generateMnemonic } from "bip39";
 import { toast } from "sonner";
-
+import { useWalletService} from "@/hooks/use-wallet-service";
 
 import React from "react";
-import { solanaKeyPairGenWithMnemonic } from "@/lib/utils";
+import { EthereumKeyPairGenWithMnemonic, solanaKeyPairGenWithMnemonic } from "@/lib/utils";
 interface GenerateInputSectionProps {
   setSecretPhase: React.Dispatch<React.SetStateAction<string>>;
   setKeys: React.Dispatch<React.SetStateAction<Array<SolanaKeypair>>>;
@@ -17,22 +17,17 @@ interface GenerateInputSectionProps {
 const GenerateInputSection = ({setSecretPhase, setKeys}:GenerateInputSectionProps) => {
 const pathname = usePathname().replace('/', '');
 const InputRef = React.useRef<HTMLInputElement>(null);
-
+const walletService = useWalletService(pathname as BlockchainType);
 const generateWallet = async () => {
 // Checks if the input is empty
-if (InputRef.current?.value === "") {
+const inputValue = InputRef.current?.value?.trim() || "";
+if (!inputValue) {
     try{
-    const mnemonic = generateMnemonic();
-    // const seed = mnemonicToSeedSync(mnemonic);
-    // const path = `m/44'/501'/0'/0'`;
-    // const derivedSeed = derivePath(path, seed.toString("hex")).key;
-    // const secret = nacl.sign.keyPair.fromSeed(derivedSeed).secretKey;
-    // const newKeypair:SolanaKeypair = {
-    //     publicKey: Keypair.fromSecretKey(secret).publicKey.toBase58(),
-    //     secretKey: bs58.encode(secret)
-    // };
-    const newKeypair = await solanaKeyPairGenWithMnemonic(mnemonic,0);
-    setKeys(prev => [...prev, newKeypair]);
+
+    // const mnemonic = generateMnemonic();
+    // const newKeypair = await solanaKeyPairGenWithMnemonic(mnemonic,0);
+    const { mnemonic, keyPair } = await walletService.generateNewWallet();
+    setKeys(prev => [...prev, keyPair]);
     setSecretPhase(mnemonic);
     }
     catch(error: any){
@@ -41,13 +36,14 @@ if (InputRef.current?.value === "") {
     
 }else{
     // validate the mnemonic
-    let mnemonic = (InputRef.current?.value||"").trim() ;
-    if(mnemonic.split(" ").length !== 12){
-        toast.error("Invalid mnemonic.");
-        return;
-    }
+    // let mnemonic = (InputRef.current?.value||"").trim() ;
+    // if(mnemonic.split(" ").length !== 12){
+    //     toast.error("Invalid mnemonic.");
+    //     return;
+    // }
     
     try{
+    const keyPair = await walletService.importWallet(inputValue);
     // const seed = mnemonicToSeedSync(mnemonic);
     // const path = `m/44'/501'/0'/0'`;
     // const derivedSeed = derivePath(path, seed.toString("hex")).key;
@@ -56,9 +52,9 @@ if (InputRef.current?.value === "") {
     //     publicKey: Keypair.fromSecretKey(secret).publicKey.toBase58(),
     //     secretKey: bs58.encode(secret)
     // };
-    const newKeypair = await solanaKeyPairGenWithMnemonic(mnemonic,0);
-    setKeys(prev => [...prev, newKeypair]);
-    setSecretPhase(mnemonic);
+    // const newKeypair = await solanaKeyPairGenWithMnemonic(mnemonic,0);
+    setKeys(prev => [...prev, keyPair]);
+    setSecretPhase(inputValue);
     }catch(error: any){
         toast.error(error?.message||"Invalid mnemonic.");
     }

@@ -6,6 +6,8 @@ import nacl from "tweetnacl";
 import bs58 from "bs58";
 import { Keypair } from "@solana/web3.js";
 import { Keypair as SolanaKeypair } from "@/types/index";
+
+import { HDNodeWallet, Wallet } from "ethers";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -23,4 +25,20 @@ const solanaKeyPairGenWithMnemonic = async (mnemonic: string,index:number) => {
   return newKeypair;
 }
 
-export { solanaKeyPairGenWithMnemonic }
+
+const EthereumKeyPairGenWithMnemonic = async (mnemonic: string,index:number) => {
+  const seed = mnemonicToSeedSync(mnemonic);
+  const path = `m/44'/60'/${index}'/0'`;
+  const hdNode = HDNodeWallet.fromSeed(seed);
+  const child = hdNode.derivePath(path);
+  const secretKey = child.privateKey;
+  const publicKey = child.publicKey;
+  
+  const newKeypair:SolanaKeypair = {
+      publicKey: publicKey,
+      secretKey: secretKey
+  };
+   return newKeypair;
+}
+
+export { solanaKeyPairGenWithMnemonic ,EthereumKeyPairGenWithMnemonic}
