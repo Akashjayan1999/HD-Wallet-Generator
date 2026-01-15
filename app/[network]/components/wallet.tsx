@@ -61,7 +61,7 @@ const AddWallet = async() => {
         
             <div className="pt-5">
                 {keys.map((key, index) => (
-                   <div key={index} className="w-full border  rounded-xl border-gray-300 dark:border-gray-700">
+                   <div key={index} className="w-full border mt-3  rounded-xl border-gray-300 dark:border-gray-700">
                     <div className="flex justify-between items-center font-mono py-3 px-5">
                     <div className="text-3xl font-bold">Wallet {index + 1}</div>
                     <Trash className="text-red-500 hover:text-red-700 cursor-pointer" size={18} onClick={()=>{removeItemFromWallet(index)}} />
