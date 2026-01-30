@@ -8,12 +8,13 @@ import { walletStateAtom,mnemonicPhraseAtom } from "@/store/wallet";
 import { useAtom } from "jotai";
 import useToggle from "@/hooks/use-toggle";
 import MnemonicModel from "./components/mnemonic-modal";
-
+import { useRouter } from 'next/navigation';
 export default  function Page() {
   const [,dispatch] = useAtom(walletStateAtom);
   const [mnemonicPhrase] = useAtom(mnemonicPhraseAtom);
   const walletService = useWalletService("Solana" as BlockchainType);
-  const [isOpen, toggleOpen] = useToggle();
+  const [isOpen, toggleOpen] = useToggle()
+  const router = useRouter();
   const generateWallet = async()=>{
   try{
      const { mnemonic, keyPair } = await walletService.generateNewWallet();
@@ -28,6 +29,10 @@ export default  function Page() {
  
 
 }
+
+  const handleImportWallet = () => {
+    router.push("/extension/import-wallet");
+  }
 
   return (
     <div className="h-full flex flex-col">
@@ -49,7 +54,7 @@ export default  function Page() {
             </div>
             <div className="flex flex-col gap-2 mt-5">
               <Button className="cursor-pointer" onClick={generateWallet}>Generate Wallet</Button>
-              <Button className="cursor-pointer">Import Wallet</Button> 
+              <Button className="cursor-pointer" onClick={handleImportWallet}>Import Wallet</Button> 
             </div>
            </div>
            </div>

@@ -12,18 +12,24 @@ import { mnemonicPhraseAtom } from "@/store/wallet";
 import { useAtom } from "jotai";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
+import { EyeClosed, Eye } from "lucide-react";
+import useToggle from "@/hooks/use-toggle";
 interface MnemonicModelProps {
   open: boolean;
   onClose: () => void;
 }
 const MnemonicModel = ({ open, onClose }: MnemonicModelProps) => {
   const [mnemonicPhrase] = useAtom(mnemonicPhraseAtom);
-
+ const [showPhrase, setShowPhrase] = useToggle(false);
   const mnemonicArray = mnemonicPhrase.split(" ");
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(mnemonicPhrase);
     toast.success("Copied to clipboard!");
+  };
+
+  const handleShowPhrase = () => {
+    setShowPhrase();
   };
   return (
     <AlertDialog open={open} onOpenChange={onClose} >
@@ -31,8 +37,9 @@ const MnemonicModel = ({ open, onClose }: MnemonicModelProps) => {
         >
         <AlertDialogHeader>
           <AlertDialogTitle>Secret(Metadata) Phrase</AlertDialogTitle>
-          <AlertDialogDescription className="flex flex-col gap-4 text-balance cursor-pointer" onClick={copyToClipboard}>
-            <div className="grid grid-cols-1 lg:grid-cols-2  gap-4">
+          <h3 className="font-semibold text-sm text-gray-600 dark:text-gray-300 mx-auto pb-3">Please Keep this Phrase safely</h3>
+          <AlertDialogDescription className="flex flex-col gap-4 text-balance " >
+            <div className="grid grid-cols-1 lg:grid-cols-2  gap-2">
               {mnemonicArray.map((word, index) => (
                 <div
                   key={index}
@@ -42,19 +49,31 @@ const MnemonicModel = ({ open, onClose }: MnemonicModelProps) => {
                     {index + 1}.
                   </span>
                   <span className="font-mono text-gray-900 dark:text-gray-100">
-                    {word}
+                    {showPhrase ? word : "*".repeat(word.length)}
                   </span>
                 </div>
               ))}
             </div>
+            <div className="flex justify-between">
             <div
               className="flex items-center cursor-pointer pt-2"
-              
+              onClick={copyToClipboard}
             >
               <Copy className="text-muted-foreground text-sm" size={23} />
               <span className="ml-2 text-base text-muted-foreground">
                 Click  To Copy
               </span>
+            </div>
+            {showPhrase ? (
+              <div className="flex items-center cursor-pointer pt-2">
+                <EyeClosed className="text-muted-foreground text-sm" size={23} onClick={handleShowPhrase}/>
+                
+              </div>
+            ) : (
+              <div className="flex items-center cursor-pointer pt-2">
+                <Eye className="text-muted-foreground text-sm" size={23} onClick={handleShowPhrase}/>
+              </div>
+            )}
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
