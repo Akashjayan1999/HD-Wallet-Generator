@@ -12,6 +12,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+const supportedChains = [
+  {
+    name: "Ethereum",
+    icon: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=024",
+    chainId: 1,
+    rpcUrl: "",
+    blockExplorerUrl: "https://etherscan.io",
+  },
+  {
+    name: "Solana",
+    icon: "https://cryptologos.cc/logos/solana-sol-logo.svg?v=024",
+    chainId:101,
+    rpcUrl: "",
+    blockExplorerUrl: "https://solscan.io",
+  },
+   ]
+
 
 const solanaKeyPairGenWithMnemonic = async (mnemonic: string,index:number) => {
   const seed = mnemonicToSeedSync(mnemonic);
@@ -41,4 +58,4 @@ const EthereumKeyPairGenWithMnemonic = async (mnemonic: string,index:number) => 
    return newKeypair;
 }
 
-export { solanaKeyPairGenWithMnemonic ,EthereumKeyPairGenWithMnemonic}
+export { solanaKeyPairGenWithMnemonic ,EthereumKeyPairGenWithMnemonic,supportedChains}

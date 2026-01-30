@@ -12,6 +12,14 @@ function AlertDialog({
   return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />
 }
 
+interface AlertDialogOverlayProps extends React.ComponentProps<typeof AlertDialogPrimitive.Overlay> {
+  isInsideExtension?: boolean;
+}
+
+interface AlertDialogContentProps extends React.ComponentProps<typeof AlertDialogPrimitive.Content> {
+  isInsideExtension?: boolean;
+}
+
 function AlertDialogTrigger({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>) {
@@ -30,13 +38,14 @@ function AlertDialogPortal({
 
 function AlertDialogOverlay({
   className,
+  isInsideExtension=false,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>) {
+}: AlertDialogOverlayProps) {
   return (
     <AlertDialogPrimitive.Overlay
       data-slot="alert-dialog-overlay"
       className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
+        `data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 ${isInsideExtension?'':"bg-black/50"}`,
         className
       )}
       {...props}
@@ -45,12 +54,13 @@ function AlertDialogOverlay({
 }
 
 function AlertDialogContent({
+  isInsideExtension=false,
   className,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Content>) {
+}: AlertDialogContentProps) {
   return (
     <AlertDialogPortal>
-      <AlertDialogOverlay />
+      <AlertDialogOverlay isInsideExtension={isInsideExtension} />
       <AlertDialogPrimitive.Content
         data-slot="alert-dialog-content"
         className={cn(

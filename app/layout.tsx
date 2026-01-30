@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans, Geist, Geist_Mono, Quicksand, Varela_Round } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/providers/theme-provider";
-import Header from "./components/header";
-import { Toaster } from "@/components/ui/sonner"
-import { ConfirmDialogProvider } from "@/components/providers/confirmation-provider";
+import { JotaiProvider } from "@/components/providers/jotai-provider";
+import { Toaster } from "sonner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -52,19 +50,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable}  ${quicksand.variable} ${varelaRound.variable} ${dmSans.variable} antialiased font-quicksand`}
       >
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-          <ConfirmDialogProvider>
-          <Toaster />
-          <Header />
-         
+          <Toaster /> 
+        <JotaiProvider>
         {children}
-         </ConfirmDialogProvider>
-        </ThemeProvider>
+        </JotaiProvider> 
       </body>
     </html>
   );

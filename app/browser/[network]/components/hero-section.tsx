@@ -7,7 +7,7 @@ import { Keypair } from "@/types/index";
 import SecretPhrase from "./secrect-phrase";
 import SecretWallet from "./wallet";
 export default function HeroSection() {
-  const pathname = usePathname().replace('/', '');
+  const pathname = usePathname().split('/').at(-1);
 
   const [secretPhase, setSecretPhase] = useState<string>("")
   const [keys, setKeys] = useState<Array<Keypair>>([])

@@ -9,13 +9,13 @@ import { toast } from "sonner";
 import { useWalletService} from "@/hooks/use-wallet-service";
 
 import React from "react";
-import { EthereumKeyPairGenWithMnemonic, solanaKeyPairGenWithMnemonic } from "@/lib/utils";
+
 interface GenerateInputSectionProps {
   setSecretPhase: React.Dispatch<React.SetStateAction<string>>;
   setKeys: React.Dispatch<React.SetStateAction<Array<SolanaKeypair>>>;
 }
 const GenerateInputSection = ({setSecretPhase, setKeys}:GenerateInputSectionProps) => {
-const pathname = usePathname().replace('/', '');
+const pathname = usePathname().split('/').at(-1);
 const InputRef = React.useRef<HTMLInputElement>(null);
 const walletService = useWalletService(pathname as BlockchainType);
 const generateWallet = async () => {

@@ -16,7 +16,7 @@ interface SecretWalletProps {
   setSecretPhase: React.Dispatch<React.SetStateAction<string>>;
 }
 const SecretWallet = ({ keys, secretPhase,setKeys,setSecretPhase }: SecretWalletProps) => {
-const pathname = usePathname().replace('/', '');
+const pathname = usePathname().split('/').at(-1);
 const [showKeyIndex, setShowKeyIndex] = useState<number>(-1);
 const { confirm } = useConfirm();
 const walletService = useWalletService(pathname as BlockchainType);

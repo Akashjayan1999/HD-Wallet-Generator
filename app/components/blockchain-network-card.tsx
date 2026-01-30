@@ -16,7 +16,7 @@ const BlockchainNetworkCard = () => {
     <>
       {networks.map((network) => (
         <div key={network} className="">
-            <Link href={`/${network}`}>
+            <Link href={`/browser/${network}`}>
           {card(network)}
             </Link>
         </div>

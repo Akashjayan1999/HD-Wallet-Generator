@@ -42,26 +42,15 @@ interface ConfirmDialogContextType {
 const ConfirmDialogContext = createContext<ConfirmDialogContextType | null>(null);
 
 export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
-  // State to control dialog visibility and content
+
   const [state, setState] = useState<ConfirmDialogState>({ 
     isOpen: false 
   });
   
-  // Ref to store the resolve function from the Promise
-  // This allows us to resolve the promise from button clicks
+ 
   const fn = useRef<((choice: boolean) => void) | null>(null);
 
-  /**
-   * The confirm function that returns a Promise
-   * This allows us to use async/await syntax when calling it
-   * 
-   * Example:
-   * const result = await confirm({ 
-   *   title: "Delete Item?", 
-   *   message: "This cannot be undone" 
-   * });
-   * if (result) { // user clicked "Yes" }
-   */
+  
   const confirm = useCallback(
     (data: ConfirmDialogOptions): Promise<boolean> => {
       return new Promise((resolve) => {
@@ -81,7 +70,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  // Handle cancel button click - resolves promise with false
+
   const handleClose = () => {
     fn.current?.(false);
   };
