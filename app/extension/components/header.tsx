@@ -28,6 +28,7 @@ const Header = () => {
       dispatch({ type: 'SET_ACTIVE_WALLET', payload: walletsForChain[0] });
     }
   };
+
   return (
     <header className=" px-2 py-3 shadow-sm">
       <div className="flex justify-between" >
